@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#d8ebf7">
+  <title>A Note for My Dearest</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #284b66;
+      --blue: #4d86ad;
+      --accent: #719fbd;
+      --paper: #f8fbfd;
+      --muted: #5d778b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at 12% 16%, #ffffffc4, transparent 30%),
+        radial-gradient(ellipse at 88% 82%, #ffffff72, transparent 34%),
+        linear-gradient(135deg, #dcecf6, #bfd8e9 56%, #d4e7f2);
+      font-family: "Palatino Linotype", "Book Antiqua", Georgia, serif;
+    }
+
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+
+    .scene {
+      position: relative;
+      display: grid;
+      min-height: 100vh;
+      place-items: center;
+      padding: 44px 20px;
+      isolation: isolate;
+    }
+
+    .sky-decor {
+      position: fixed;
+      z-index: -1;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .postmark {
+      position: absolute;
+      top: 19%;
+      left: 8%;
+      width: 104px;
+      height: 54px;
+      border: 1px solid #6f9db9;
+      border-radius: 50%;
+      color: #6f9db9;
+      opacity: .36;
+      transform: rotate(-12deg);
+    }
+    .postmark::before {
+      position: absolute;
+      top: 17px;
+      right: -54px;
+      width: 52px;
+      height: 20px;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+      content: "";
+    }
+    .postmark::after {
+      position: absolute;
+      inset: 5px;
+      border: 1px solid currentColor;
+      border-radius: 50%;
+      content: "";
+    }
+
+    .postage {
+      position: absolute;
+      top: 15px;
+      right: 18px;
+      display: grid;
+      width: 46px;
+      height: 55px;
+      place-items: center;
+      align-content: center;
+      gap: 2px;
+      border: 1px dashed #78a1bd;
+      background: #eaf4fa;
+      color: #527f9e;
+      transform: rotate(4deg);
+    }
+    .postage svg { width: 19px; height: 19px; }
+    .postage span {
+      font-size: .38rem;
+      letter-spacing: .08em;
+    }
+
+    .card {
+      position: relative;
+      width: min(100%, 620px);
+      padding: clamp(42px, 8vw, 68px);
+      border: 1px solid #84a9c2;
+      border-radius: 3px;
+      background:
+        linear-gradient(180deg, #fbfdfe, #f3f8fb);
+      box-shadow: 8px 10px 0 #4e78951a, 0 20px 55px #375d771f;
+      text-align: center;
+      animation: reveal 850ms cubic-bezier(.2,.8,.2,1) both;
+    }
+    .card::before {
+      position: absolute;
+      inset: 9px;
+      border: 1px dashed #c0d5e4;
+      content: "";
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      margin: 26px 0 17px;
+      color: #557f9d;
+      font-family: "Palatino Linotype", "Book Antiqua", Georgia, serif;
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Baskerville", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+      font-size: clamp(2.25rem, 8vw, 3.45rem);
+      font-weight: 400;
+      letter-spacing: -.035em;
+      line-height: 1.12;
+    }
+
+    .intro {
+      max-width: 390px;
+      margin: 20px auto 31px;
+      color: #597386;
+      font-size: 1rem;
+      line-height: 1.85;
+    }
+
+    .rule {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin: 23px 0 28px;
+      color: var(--accent);
+      font-size: .8rem;
+      letter-spacing: .18em;
+    }
+    .rule::before, .rule::after {
+      width: 52px;
+      height: 1px;
+      content: "";
+      background: #bfd4e2;
+    }
+
+    .date-label {
+      display: block;
+      margin: 0 0 10px;
+      color: #4a6a81;
+      font-size: .9rem;
+      letter-spacing: .06em;
+    }
+
+    input[type="date"] {
+      width: min(100%, 310px);
+      padding: 13px 14px;
+      border: 1px solid #a5bfd1;
+      outline: none;
+      background: #f7fbfd;
+      color: #284b64;
+      font-family: "Palatino Linotype", "Book Antiqua", Georgia, serif;
+      transition: border-color .2s, box-shadow .2s, background .2s;
+    }
+    input[type="date"]:focus {
+      border-color: var(--blue);
+      background: #fff;
+      box-shadow: 0 0 0 3px #4a87ac2b;
+    }
+
+    .primary, .secondary {
+      border: 1px solid #3c7191;
+      border-radius: 0;
+      font-family: "Palatino Linotype", "Book Antiqua", Georgia, serif;
+      font-size: .78rem;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+      transition: color .2s, background .2s, transform .2s;
+    }
+    .primary {
+      display: block;
+      margin: 22px auto 0;
+      padding: 14px 24px;
+      color: #f4f9fc;
+      background: #3c7191;
+    }
+    .primary:hover {
+      color: #fff;
+      background: #528bad;
+      transform: translateY(-1px);
+    }
+    .primary:active, .secondary:active { transform: translateY(0); }
+
+    .hint {
+      min-height: 1.25em;
+      margin: 13px 0 0;
+      color: #805567;
+      font-size: .83rem;
+    }
+
+    .letter-card { text-align: left; }
+    .letter-card .eyebrow, .letter-card h1, .letter-card .letter-date { text-align: center; }
+    .letter-card h1 { font-size: clamp(2rem, 7vw, 2.85rem); }
+    .letter-date {
+      margin: 13px 0 27px;
+      color: var(--accent);
+      font-size: .88rem;
+      letter-spacing: .1em;
+    }
+    .letter {
+      position: relative;
+      padding: clamp(12px, 3vw, 22px) 0;
+      border-top: 1px solid #c5d9e6;
+      border-bottom: 1px solid #c5d9e6;
+      color: #465e71;
+      font-size: 1.06rem;
+      line-height: 1.95;
+      font-family: "Segoe Print", "Bradley Hand", cursive;
+    }
+    .letter p { margin: 0 0 15px; }
+    .letter p:last-child { margin-bottom: 0; }
+    .signature {
+      color: #315a75;
+      font-style: italic;
+      text-align: right;
+    }
+    .letter-actions { text-align: center; }
+    .secondary {
+      margin-top: 20px;
+      padding: 11px 18px;
+      border-color: #7d9fb6;
+      color: #426c87;
+      background: transparent;
+    }
+    .secondary:hover {
+      color: #fff;
+      background: #426c87;
+    }
+
+    .love-heart {
+      position: absolute;
+      z-index: 2;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      margin: 0;
+      overflow: hidden;
+      background: #f8fbfdf0;
+      color: #397ba1;
+    }
+    .love-heart svg {
+      display: block;
+      width: clamp(100px, 30vw, 154px);
+      height: auto;
+      margin: 0 auto;
+      overflow: visible;
+      filter: drop-shadow(0 8px 12px #285c7a30);
+      transform-origin: center;
+    }
+    .love-heart svg.bursting {
+      animation: heart-balloon-pop 1.35s cubic-bezier(.2,.8,.2,1) both;
+    }
+    .firework-spark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 3px;
+      height: 13px;
+      border-radius: 999px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, -50%) rotate(var(--spark-angle)) scale(.1);
+      animation: firework-burst 850ms ease-out forwards;
+    }
+    .firework-spark:nth-of-type(3n) { background: #b4d7e8; }
+    .firework-spark:nth-of-type(3n + 1) { background: #4d86ad; }
+    .firework-spark:nth-of-type(3n + 2) { background: #e4f2f8; }
+    .love-heart.is-bursting .firework-spark {
+      animation-delay: var(--spark-delay);
+    }
+    .love-heart[hidden] { display: none; }
+
+    .screen[hidden] { display: none; }
+    .sparkle {
+      position: fixed;
+      z-index: 4;
+      bottom: -25px;
+      color: var(--accent);
+      pointer-events: none;
+      animation: sparkle-rise 2.6s ease-out forwards;
+    }
+
+    @keyframes reveal {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes sparkle-rise {
+      to { opacity: 0; transform: translateY(-100vh) rotate(30deg); }
+    }
+    @keyframes heart-balloon-pop {
+      0% { opacity: 0; transform: scale(.08); }
+      15% { opacity: 1; transform: scale(.55); }
+      54% { opacity: 1; transform: scale(1.38); }
+      68% { opacity: 1; transform: scale(1.5); }
+      76%, 100% { opacity: 0; transform: scale(1.75); }
+    }
+    @keyframes firework-burst {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) rotate(var(--spark-angle)) scale(.1);
+      }
+      18% { opacity: 1; }
+      100% {
+        opacity: 0;
+        transform: translate(calc(-50% + var(--spark-x)), calc(-50% + var(--spark-y))) rotate(var(--spark-angle)) scale(.75);
+      }
+    }
+
+    @media (max-width: 520px) {
+      .scene { padding: 26px 15px; }
+      .card { padding: 42px 28px; }
+      .card::before { inset: 7px; }
+      .postmark { top: 7%; left: -5px; transform: scale(.8) rotate(-12deg); }
+      .postage { top: 12px; right: 13px; width: 40px; height: 49px; }
+      .letter-card { padding: 32px 26px; }
+      .letter-card .eyebrow { margin-bottom: 12px; }
+      .letter-card h1 { font-size: clamp(1.8rem, 7vw, 2.35rem); }
+      .letter-card .rule { margin: 15px 0 18px; }
+      .letter-date { margin: 0 0 16px; }
+      .letter {
+        padding: 10px 0;
+        font-size: .96rem;
+        line-height: 1.7;
+      }
+      .letter p { margin-bottom: 10px; }
+      .secondary { margin-top: 14px; padding: 9px 14px; }
+      .love-heart svg { width: 112px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+      .love-heart svg.bursting {
+        opacity: 1;
+        transform: none;
+      }
+      .love-heart.is-bursting .firework-spark {
+        opacity: 1;
+        transform: translate(calc(-50% + var(--spark-x)), calc(-50% + var(--spark-y))) rotate(var(--spark-angle));
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="scene">
+    <div class="sky-decor" aria-hidden="true">
+      <div class="postmark"></div>
+    </div>
+
+    <section class="card screen" id="welcome" aria-labelledby="welcome-title">
+      <div class="postage" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M12 20s-8-4.8-8-10a4.2 4.2 0 0 1 8-1.6A4.2 4.2 0 0 1 20 10c0 5.2-8 10-8 10Z" fill="currentColor"/>
+        </svg>
+        <span>LOVE POST</span>
+      </div>
+      <p class="eyebrow">A note for my dearest</p>
+      <h1 id="welcome-title">Happy Monthiversary</h1>
+      <div class="rule" aria-hidden="true">✦</div>
+      <p class="intro">I made this little note just for you. Choose our special date this month to open my message.</p>
+      <form id="date-form">
+        <label class="date-label" for="monthsary-date">Our special date</label>
+        <input id="monthsary-date" name="monthsary-date" type="date" required>
+        <button class="primary" type="submit">Open your letter</button>
+        <p class="hint" id="date-hint" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section class="card letter-card screen" id="letter-screen" aria-labelledby="letter-title" hidden>
+      <div class="postage" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M12 20s-8-4.8-8-10a4.2 4.2 0 0 1 8-1.6A4.2 4.2 0 0 1 20 10c0 5.2-8 10-8 10Z" fill="currentColor"/>
+        </svg>
+        <span>LOVE POST</span>
+      </div>
+      <p class="eyebrow">With all my love</p>
+      <h1 id="letter-title">To My Dearest</h1>
+      <div class="rule" aria-hidden="true">✦</div>
+      <p class="letter-date" id="letter-date"></p>
+      <article class="letter">
+        <p>My love,</p>
+        <p>Happy monthsary! I’m so grateful to have you in my life. Even ordinary days feel brighter with you by my side.</p>
+        <p>Thank you for your love and all the little things that make me smile. I look forward to making many more memories together.</p>
+        <p>You are still my favorite person. I love you, today and always.</p>
+        <p class="signature">Forever yours,<br>Your love</p>
+        <div class="love-heart" id="love-heart" aria-hidden="true" hidden>
+          <svg viewBox="0 0 160 148" role="presentation">
+            <path d="M80 139 18 78C-13 46 8 7 42 7c17 0 30 10 38 24C88 17 101 7 118 7c34 0 55 39 24 71L80 139Z" fill="currentColor"/>
+            <path d="M35 31c9-9 22-11 32-6" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-width="4" opacity=".55"/>
+          </svg>
+        </div>
+      </article>
+      <div class="letter-actions">
+        <button class="secondary" id="love-button" type="button" aria-expanded="false" aria-controls="love-heart">I love you</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const form = document.querySelector("#date-form");
+    const dateInput = document.querySelector("#monthsary-date");
+    const dateHint = document.querySelector("#date-hint");
+    const welcome = document.querySelector("#welcome");
+    const letterScreen = document.querySelector("#letter-screen");
+    const letterDate = document.querySelector("#letter-date");
+    const loveButton = document.querySelector("#love-button");
+    const loveHeart = document.querySelector("#love-heart");
+    let loveEffectTimer;
+
+    const now = new Date();
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const nextMonthStart = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+    const lastDay = new Date(nextMonthStart - 1);
+    const toDateValue = (date) => {
+      const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+      return localDate.toISOString().slice(0, 10);
+    };
+
+    dateInput.min = toDateValue(monthStart);
+    dateInput.max = toDateValue(lastDay);
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (!dateInput.value) {
+        dateHint.textContent = "Please choose your monthsary date this month.";
+        dateInput.focus();
+        return;
+      }
+
+      const chosenDate = new Date(`${dateInput.value}T12:00:00`);
+      if (chosenDate < monthStart || chosenDate > lastDay) {
+        dateHint.textContent = "Please choose a date within this month.";
+        dateInput.focus();
+        return;
+      }
+
+      letterDate.textContent = new Intl.DateTimeFormat("ceb", {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      }).format(chosenDate);
+      welcome.hidden = true;
+      letterScreen.hidden = false;
+      letterScreen.scrollIntoView({ behavior: "smooth", block: "center" });
+      revealDetails();
+    });
+
+    loveButton.addEventListener("click", () => {
+      window.clearTimeout(loveEffectTimer);
+      loveHeart.hidden = false;
+      loveButton.setAttribute("aria-expanded", "true");
+      loveHeart.classList.add("is-bursting");
+
+      const heartSvg = loveHeart.querySelector("svg");
+      heartSvg.classList.remove("bursting");
+      loveHeart.querySelectorAll(".firework-spark").forEach((spark) => spark.remove());
+      void heartSvg.offsetWidth;
+      heartSvg.classList.add("bursting");
+
+      const sparkCount = 24;
+      for (let index = 0; index < sparkCount; index += 1) {
+        const angle = (Math.PI * 2 * index) / sparkCount;
+        const distance = 56 + (index % 2) * 34;
+        const spark = document.createElement("span");
+        spark.className = "firework-spark";
+        spark.style.setProperty("--spark-x", `${Math.cos(angle) * distance}px`);
+        spark.style.setProperty("--spark-y", `${Math.sin(angle) * distance}px`);
+        spark.style.setProperty("--spark-angle", `${(angle * 180) / Math.PI}deg`);
+        spark.style.setProperty("--spark-delay", `${0.72 + (index % 2) * 0.1}s`);
+        loveHeart.append(spark);
+        window.setTimeout(() => spark.remove(), 1900);
+      }
+
+      loveEffectTimer = window.setTimeout(() => {
+        loveHeart.hidden = true;
+        loveHeart.classList.remove("is-bursting");
+        loveButton.setAttribute("aria-expanded", "false");
+      }, 1900);
+    });
+
+    function revealDetails() {
+      for (let index = 0; index < 8; index += 1) {
+        const sparkle = document.createElement("span");
+        sparkle.className = "sparkle";
+        sparkle.textContent = "✦";
+        sparkle.style.left = `${12 + Math.random() * 76}%`;
+        sparkle.style.animationDelay = `${Math.random() * 0.7}s`;
+        sparkle.style.fontSize = `${10 + Math.random() * 9}px`;
+        document.body.append(sparkle);
+        window.setTimeout(() => sparkle.remove(), 3300);
+      }
+    }
+  </script>
+</body>
+</html>
