@@ -391,7 +391,7 @@
       <p class="eyebrow">A note for my dearest</p>
       <h1 id="welcome-title">Happy Monthiversary</h1>
       <div class="rule" aria-hidden="true">✦</div>
-      <p class="intro">I made this little note just for you. Choose our special date this month to open my message.</p>
+      <p class="intro">I made this little note just for you. Choose our special date to open my message.</p>
       <form id="date-form">
         <label class="date-label" for="monthsary-date">Our special date</label>
         <input id="monthsary-date" name="monthsary-date" type="date" required>
@@ -441,33 +441,15 @@
     const loveHeart = document.querySelector("#love-heart");
     let loveEffectTimer;
 
-    const now = new Date();
-    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-    const nextMonthStart = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-    const lastDay = new Date(nextMonthStart - 1);
-    const toDateValue = (date) => {
-      const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-      return localDate.toISOString().slice(0, 10);
-    };
-
-    dateInput.min = toDateValue(monthStart);
-    dateInput.max = toDateValue(lastDay);
-
     form.addEventListener("submit", (event) => {
       event.preventDefault();
       if (!dateInput.value) {
-        dateHint.textContent = "Please choose your monthsary date this month.";
+        dateHint.textContent = "Please choose your special date.";
         dateInput.focus();
         return;
       }
 
       const chosenDate = new Date(`${dateInput.value}T12:00:00`);
-      if (chosenDate < monthStart || chosenDate > lastDay) {
-        dateHint.textContent = "Please choose a date within this month.";
-        dateInput.focus();
-        return;
-      }
-
       letterDate.textContent = new Intl.DateTimeFormat("ceb", {
         day: "numeric",
         month: "long",
